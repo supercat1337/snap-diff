@@ -21,6 +21,7 @@ import { exportToMarkdown } from './exporters/md.js';
 import { exportToTxt } from './exporters/txt.js';
 import { exportToHtml } from './exporters/html.js';
 import { exportToHtml as exportToHtml2 } from './exporters/html2.js';
+import { getDateTimeStringForFileName } from './lib/utils.js';
 
 /**
  * Entry point of the CLI application.
@@ -96,7 +97,7 @@ async function main() {
         // If --format is given without --export, use a default basename
         let effectiveExportBasename = exportBasename;
         if (formatStr && !exportBasename) {
-            effectiveExportBasename = `snapdiff_${Date.now()}`;
+            effectiveExportBasename = `snapdiff_${getDateTimeStringForFileName()}`;
             if (isHuman) {
                 console.warn(
                     `Warning: --format given without --export. Using default basename "${effectiveExportBasename}"`
@@ -189,7 +190,7 @@ async function main() {
                     old: { path: oldDbPath, ...infoOld },
                 },
                 exports: reports, // <--- MERGED EXPORT RESULTS
-                generated_at: new Date().toISOString(),
+                generated_at: Date.now(),
             };
             console.log(JSON.stringify(finalOutput, null, 2));
         }
@@ -227,19 +228,24 @@ export async function generateReportsFromNdjson(
     const results = [];
 
     if (activeFormats.includes('csv')) {
-        results.push(await exportToCsv(sourcePath, `${basename}.csv`, isHuman));
+        let report = await exportToCsv(sourcePath, `${basename}.csv`, isHuman);
+        results.push({ ...report, format: 'csv' });
     }
     if (activeFormats.includes('md')) {
-        results.push(await exportToMarkdown(sourcePath, `${basename}.md`, isHuman));
+        let report = await exportToMarkdown(sourcePath, `${basename}.md`, isHuman);
+        results.push({ ...report, format: 'md' });
     }
     if (activeFormats.includes('txt')) {
-        results.push(await exportToTxt(sourcePath, `${basename}.txt`, isHuman));
+        let report = await exportToTxt(sourcePath, `${basename}.txt`, isHuman);
+        results.push({ ...report, format: 'txt' });
     }
     if (activeFormats.includes('html')) {
-        results.push(await exportToHtml(sourcePath, `${basename}.html`, isHuman));
+        let report = await exportToHtml(sourcePath, `${basename}.html`, isHuman);
+        results.push({ ...report, format: 'html' });
     }
     if (activeFormats.includes('html2')) {
-        results.push(await exportToHtml2(sourcePath, `${basename}-2.html`, isHuman));
+        let report = await exportToHtml2(sourcePath, `${basename}-2.html`, isHuman);
+        results.push({ ...report, format: 'html2' });
     }
 
     return results;

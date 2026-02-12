@@ -3,7 +3,7 @@ import Database from 'better-sqlite3';
 import { createWriteStream } from 'node:fs';
 import { minimatch } from 'minimatch';
 import os from 'node:os';
-import { join, resolve, basename } from 'node:path';
+import { resolve } from 'node:path';
 
 /**
  * @typedef {Object} SnapshotInfo
@@ -120,9 +120,10 @@ function partitionExclusions(patterns) {
  * Useful for constructing SQL queries where some columns should be NULL.
  * The fields generated are path, type, size, hash, mtime, ctime, btime, mode, ino, nlink, target, user, and group.
  * @param {string} p
+ * @param {boolean} resolveNames
  * @returns {string} A string of NULL fields, separated by commas.
  */
-const getNullFields = p => {
+const getNullFields = (p, resolveNames) => {
     const cols = [
         'path',
         'type',
@@ -137,8 +138,43 @@ const getNullFields = p => {
         'target',
     ];
     let f = cols.map(col => `NULL as ${p}_${col}`);
-    // Добавляем заполнители для user и group
-    f.push(`NULL as ${p}_user`, `NULL as ${p}_group`);
+
+    if (resolveNames) {
+        f.push(`NULL as ${p}_user`, `NULL as ${p}_group`);
+    } else {
+        f.push(`NULL as ${p}_uid`, `NULL as ${p}_gid`);
+    }
+    return f.join(', ');
+};
+
+// SQL Helper for Metadata
+/**
+ * @param {string} p - Table prefix (e.g., n_ or o_).
+ * @param {boolean} resolveNames
+ * @returns {string}
+ */
+const getFields = (p, resolveNames) => {
+    const cols = [
+        'path',
+        'type',
+        'size',
+        'hash',
+        'mtime',
+        'ctime',
+        'btime',
+        'mode',
+        'ino',
+        'nlink',
+        'target',
+    ];
+    let f = cols.map(col => `${p}.${col} as ${p}_${col}`);
+    if (resolveNames) {
+        // Resolve to names: comparison will happen on these strings
+        f.push(`u_${p}.username as ${p}_user`, `g_${p}.groupname as ${p}_group`);
+    } else {
+        // Stay with IDs: comparison will happen on these numbers
+        f.push(`${p}.uid as ${p}_uid`, `${p}.gid as ${p}_gid`);
+    }
     return f.join(', ');
 };
 
@@ -177,42 +213,24 @@ export async function streamCompareSnapshots(newDbPath, oldDbPath, rawOutputPath
         'ctime',
         'btime',
         'mode',
-        'uid',
-        'gid',
         'ino',
         'nlink',
         'target',
     ];
+
+    // Add either the IDs or the Names to the audit list, but NEVER both
+    if (resolveNames) {
+        allCols.push('user', 'group');
+    } else {
+        allCols.push('uid', 'gid');
+    }
+
     let auditCols =
         includeCols.length > 0
             ? allCols.filter(c => includeCols.includes(c))
             : allCols.filter(c => !excludeCols.includes(c));
 
     const { sqlLike, complexGlobs } = partitionExclusions(excludePaths);
-
-    // SQL Helper for Metadata
-    /**
-     * @param {string} p - Table prefix (e.g., n_ or o_).
-     */
-    const getFields = p => {
-        const cols = [
-            'path',
-            'type',
-            'size',
-            'hash',
-            'mtime',
-            'ctime',
-            'btime',
-            'mode',
-            'ino',
-            'nlink',
-            'target',
-        ];
-        let f = cols.map(col => `${p}.${col} as ${p}_${col}`);
-        f.push(resolveNames ? `u_${p}.username as ${p}_user` : `${p}.uid as ${p}_user`);
-        f.push(resolveNames ? `g_${p}.groupname as ${p}_group` : `${p}.gid as ${p}_group`);
-        return f.join(', ');
-    };
 
     /**
      * Generates a SQL join string for authenticating users and groups.
@@ -228,11 +246,10 @@ export async function streamCompareSnapshots(newDbPath, oldDbPath, rawOutputPath
             : '';
 
     const diffConditions = auditCols
-        .map(col =>
-            col === 'uid' || col === 'gid'
-                ? `n_${col === 'uid' ? 'user' : 'group'} IS NOT o_${col === 'uid' ? 'user' : 'group'}`
-                : `n.${col} IS NOT o.${col}`
-        )
+        .map(col => {
+            // The column names in the row result will match the col name from our audit list
+            return `n_${col} IS NOT o_${col}`;
+        })
         .join(' OR ');
 
     // Filter Logic for SQL
@@ -251,20 +268,23 @@ export async function streamCompareSnapshots(newDbPath, oldDbPath, rawOutputPath
     const sql = `
     WITH 
     added_candidates AS (
+        -- Identify files present in the new snapshot but missing in the old one
         SELECT * FROM main.entries n WHERE NOT EXISTS (SELECT 1 FROM old.entries o WHERE o.path = n.path) ${sqlExcludeN}
     ),
     deleted_candidates AS (
+        -- Identify files present in the old snapshot but missing in the new one
         SELECT * FROM old.entries o WHERE NOT EXISTS (SELECT 1 FROM main.entries n WHERE n.path = o.path) ${sqlExcludeO}
     ),
     renamed_pairs AS (
+        -- Match added and deleted files by hash and size to detect renames/moves
         SELECT a.path as n_path, d.path as o_path 
         FROM added_candidates a
         JOIN deleted_candidates d ON a.hash = d.hash AND a.size = d.size
         WHERE a.hash IS NOT NULL
     )
     SELECT * FROM (
-        -- 1. MODIFIED (Колонки N и O заполнены)
-        SELECT ${getFields('n')}, ${getFields('o')}, 'MODIFIED' as status
+        -- 1. MODIFIED (Both N and O columns are populated for comparison)
+        SELECT ${getFields('n', resolveNames)}, ${getFields('o', resolveNames)}, 'MODIFIED' as status
         FROM main.entries n
         JOIN old.entries o ON n.path = o.path
         ${getAuthJoins('n', 'main')} ${getAuthJoins('o', 'old')}
@@ -272,24 +292,24 @@ export async function streamCompareSnapshots(newDbPath, oldDbPath, rawOutputPath
 
         UNION ALL
 
-        -- 2. ADDED (Колонки N заполнены, O - NULL-заполнители)
-        SELECT ${getFields('n')}, ${getNullFields('o')}, 'ADDED' as status
+        -- 2. ADDED (N columns are populated, O columns are NULL placeholders)
+        SELECT ${getFields('n', resolveNames)}, ${getNullFields('o', resolveNames)}, 'ADDED' as status
         FROM added_candidates n
         ${getAuthJoins('n', 'main')}
         WHERE NOT EXISTS (SELECT 1 FROM renamed_pairs rp WHERE rp.n_path = n.path)
 
         UNION ALL
 
-        -- 3. DELETED (Колонки N - NULL-заполнители, O - заполнены)
-        SELECT ${getNullFields('n')}, ${getFields('o')}, 'DELETED' as status
+        -- 3. DELETED (N columns are NULL placeholders, O columns are populated)
+        SELECT ${getNullFields('n', resolveNames)}, ${getFields('o', resolveNames)}, 'DELETED' as status
         FROM deleted_candidates o
         ${getAuthJoins('o', 'old')}
         WHERE NOT EXISTS (SELECT 1 FROM renamed_pairs rp WHERE rp.o_path = o.path)
 
         UNION ALL
 
-        -- 4. RENAMED (Колонки N и O заполнены)
-        SELECT ${getFields('n')}, ${getFields('o')}, 'RENAMED' as status
+        -- 4. RENAMED (Both N and O columns are populated to show path and metadata evolution)
+        SELECT ${getFields('n', resolveNames)}, ${getFields('o', resolveNames)}, 'RENAMED' as status
         FROM main.entries n
         JOIN renamed_pairs rp ON n.path = rp.n_path
         JOIN old.entries o ON o.path = rp.o_path
@@ -338,66 +358,48 @@ export async function streamCompareSnapshots(newDbPath, oldDbPath, rawOutputPath
     for (const r of query.iterate(...sqlLike, ...sqlLike)) {
         const row = /** @type {Row} */ (r);
         const currentPath = row.n_path || row.o_path;
+
+        // Path Filtering (minimatch)
         if (complexGlobs.length > 0 && complexGlobs.some(p => minimatch(currentPath, p))) continue;
 
         const entry = {
             record_type: 'entry',
             status: row.status,
-            path: row.n_path || row.o_path,
+            path: currentPath,
             file_type: row.n_type || row.o_type,
             /** @type {Record<string, {old: any, new: any}>} */
             diff: {},
         };
 
-        if (row.status === 'RENAMED') {
-            stats.renamed++;
-            entry.diff['path'] = { old: row.o_path, new: row.n_path };
-            // Also check if metadata changed during the rename
-            auditCols.forEach(col => {
-                const nVal =
-                    col === 'uid' || col === 'gid'
-                        ? row[`n_${col === 'uid' ? 'user' : 'group'}`]
-                        : row[`n_${col}`];
-                const oVal =
-                    col === 'uid' || col === 'gid'
-                        ? row[`o_${col === 'uid' ? 'user' : 'group'}`]
-                        : row[`o_${col}`];
-                if (nVal !== oVal) entry.diff[col] = { old: oVal, new: nVal };
-            });
-        } else if (row.status === 'MODIFIED') {
+        // --- Handle Stats and Status-specific Logic ---
+        if (row.status === 'MODIFIED') {
             stats.modified++;
-            auditCols.forEach(col => {
-                const nVal =
-                    col === 'uid' || col === 'gid'
-                        ? row[`n_${col === 'uid' ? 'user' : 'group'}`]
-                        : row[`n_${col}`];
-                const oVal =
-                    col === 'uid' || col === 'gid'
-                        ? row[`o_${col === 'uid' ? 'user' : 'group'}`]
-                        : row[`o_${col}`];
-                if (nVal !== oVal) entry.diff[col] = { old: oVal, new: nVal };
-            });
+        } else if (row.status === 'RENAMED') {
+            stats.renamed++;
+            // Explicitly add the path change to the diff for renames
+            entry.diff['path'] = { old: row.o_path, new: row.n_path };
         } else if (row.status === 'ADDED') {
             stats.added++;
-            // Заполняем все аудируемые колонки: old -> null, new -> значение
-            auditCols.forEach(col => {
-                let nVal;
-                if (col === 'uid') nVal = row.n_user;
-                else if (col === 'gid') nVal = row.n_group;
-                else nVal = row[`n_${col}`];
-
-                entry.diff[col] = { old: null, new: nVal };
-            });
         } else if (row.status === 'DELETED') {
             stats.deleted++;
-            // Заполняем все аудируемые колонки: old -> значение, new -> null
-            auditCols.forEach(col => {
-                let oVal;
-                if (col === 'uid') oVal = row.o_user;
-                else if (col === 'gid') oVal = row.o_group;
-                else oVal = row[`o_${col}`];
+        }
 
-                entry.diff[col] = { old: oVal, new: null };
+        // --- Populate Diff Object ---
+        if (row.status === 'MODIFIED' || row.status === 'RENAMED') {
+            auditCols.forEach(col => {
+                const nVal = row[`n_${col}`];
+                const oVal = row[`o_${col}`];
+                if (nVal !== oVal) {
+                    entry.diff[col] = { old: oVal, new: nVal };
+                }
+            });
+        } else if (row.status === 'ADDED') {
+            auditCols.forEach(col => {
+                entry.diff[col] = { old: null, new: row[`n_${col}`] };
+            });
+        } else if (row.status === 'DELETED') {
+            auditCols.forEach(col => {
+                entry.diff[col] = { old: row[`o_${col}`], new: null };
             });
         }
 
