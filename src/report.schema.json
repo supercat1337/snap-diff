@@ -35,7 +35,7 @@
       "required": ["record_type", "status", "path", "file_type"],
       "properties": {
         "record_type": { "const": "entry" },
-        "status": { "enum": ["ADDED", "MODIFIED", "DELETED"] },
+        "status": { "enum": ["ADDED", "MODIFIED", "DELETED", "RENAMED"] },
         "path": { "type": "string" },
         "file_type": { "enum": ["file", "dir", "link"] },
         "diff": {
@@ -53,16 +53,18 @@
     },
     {
       "title": "Summary Footer",
-      "required": ["record_type", "stats", "scan_end"],
+      "required": ["record_type", "stats", "scan_start", "scan_end"],
       "properties": {
         "record_type": { "const": "summary" },
+        "scan_start": { "type": "integer" },
         "stats": {
           "type": "object",
-          "required": ["added", "modified", "deleted", "total"],
+          "required": ["added", "modified", "deleted", "renamed", "total"],
           "properties": {
             "added": { "type": "integer", "minimum": 0 },
             "modified": { "type": "integer", "minimum": 0 },
             "deleted": { "type": "integer", "minimum": 0 },
+            "renamed": { "type": "integer", "minimum": 0 },
             "total": { "type": "integer", "minimum": 0 }
           }
         },
