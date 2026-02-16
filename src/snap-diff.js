@@ -179,7 +179,6 @@ async function main() {
         // ----- Machine-readable JSON output (--json) ------------------------
         if (isMachine) {
             const finalOutput = {
-                metadata: result.metadata,
                 stats: result.summary.stats,
                 snapshots: {
                     new: { path: newDbPath, ...infoNew },

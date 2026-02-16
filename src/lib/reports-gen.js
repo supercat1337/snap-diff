@@ -22,6 +22,8 @@ export async function generateReportsFromNdjson(
     formats,
     { isHuman = true } = {}
 ) {
+    const availableFormats = ['csv', 'txt', 'html', 'md', 'html2'];
+
     const activeFormats = formats.map(f => f.toLowerCase());
     /** @type {{ format: string, path: string, status: string, error?: string }[]} */
     const results = [];
@@ -45,6 +47,14 @@ export async function generateReportsFromNdjson(
     if (activeFormats.includes('html2')) {
         let report = await exportToHtml2(sourcePath, `${basename}-2.html`, isHuman);
         results.push({ ...report, format: 'html2' });
+    }
+
+    if (isHuman) {
+        activeFormats.forEach(f => {
+            if (!availableFormats.includes(f)) {
+                console.warn(`Unknown format: ${f}`);
+            }
+        });
     }
 
     return results;

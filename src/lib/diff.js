@@ -131,7 +131,7 @@ const getAuditCols = (includeCols, excludeCols, resolveNames) => {
  * @param {string[]} [options.excludeCols] - Columns to ignore (e.g., mtime, ino).
  * @param {string[]} [options.includeCols] - Columns to whitelists (e.g., hash, size).
  * @param {boolean} [options.resolveNames] - Compare by username/groupname instead of UID/GID.
- * @returns {Promise<{metadata: Object, summary: {stats: { added: number, modified: number, deleted: number, total: number }, scan_start: number, scan_end: number, record_type: string }, outputPath: string }>}
+ * @returns {Promise<{summary: {stats: { added: number, modified: number, deleted: number, total: number }, scan_start: number, scan_end: number, record_type: string }, outputPath: string }>}
  */
 export async function streamCompareSnapshots(newDbPath, oldDbPath, rawOutputPath, options = {}) {
     const { excludePaths = [], excludeCols = [], includeCols = [], resolveNames = false } = options;
@@ -252,7 +252,7 @@ export async function streamCompareSnapshots(newDbPath, oldDbPath, rawOutputPath
     return new Promise(res =>
         outputStream.end(() => {
             db.close();
-            res({ metadata: summary, summary, outputPath });
+            res({ summary, outputPath });
         })
     );
 }
