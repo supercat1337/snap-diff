@@ -4,7 +4,8 @@ import { createWriteStream } from 'node:fs';
 import { minimatch } from 'minimatch';
 import os from 'node:os';
 import { resolve } from 'node:path';
-import { generateSql } from './sql.js';
+import { generateSqlQuery } from './sql-query.js';
+import { ReportMetaData } from './report-metadata.js';
 
 /**
  * @typedef {Object} SnapshotInfo
@@ -16,7 +17,7 @@ import { generateSql } from './sql.js';
  */
 
 /**
- * @typedef {Object} Row
+ * @typedef {Object} DiffRow
  * @property {string} status
  * @property {string} n_path
  * @property {string} n_type
@@ -51,46 +52,6 @@ import { generateSql } from './sql.js';
  *
  */
 
-export class ReportMetaData {
-    /**
-     * Constructor for ReportMetaData.
-     * @param {Object} options
-     * @param {string} options.record_type - Type of report (metadata, entry, summary).
-     * @param {string} options.version - Version of the report.
-     * @param {number} options.scan_start - Timestamp of the scan start.
-     * @param {{excludePaths: string[], excludeCols: string[], includeCols: string[], resolveNames: boolean}} options.filters - Filters applied to the snapshot comparison.
-     * @param {{new: {name: string, file: string, version: string, scan_start: number, scan_end: number, content_hash: string}, old: {name: string, file: string, version: string, scan_start: number, scan_end: number, content_hash: string}}} options.comparison - Object containing comparison information (new, old).
-     */
-    constructor({ record_type, version, scan_start, filters, comparison }) {
-        this.record_type = record_type;
-        this.version = version;
-        this.scan_start = scan_start;
-        this.filters = {
-            excludePaths: filters.excludePaths,
-            excludeCols: filters.excludeCols,
-            includeCols: filters.includeCols,
-            resolveNames: filters.resolveNames,
-        };
-        this.comparison = {
-            new: {
-                name: comparison.new.name,
-                file: comparison.new.file.replace(/\\/g, '/'),
-                version: comparison.new.version,
-                scan_start: comparison.new.scan_start,
-                scan_end: comparison.new.scan_end,
-                content_hash: comparison.new.content_hash,
-            },
-            old: {
-                name: comparison.old.name,
-                file: comparison.old.file.replace(/\\/g, '/'),
-                version: comparison.old.version,
-                scan_start: comparison.old.scan_start,
-                scan_end: comparison.old.scan_end,
-                content_hash: comparison.old.content_hash,
-            },
-        };
-    }
-}
 
 /**
  * Splits patterns into SQL-compatible (LIKE) and complex Globs (Minimatch).
@@ -225,12 +186,12 @@ export async function streamCompareSnapshots(newDbPath, oldDbPath, rawOutputPath
         ) + '\n'
     );
 
-    const sql = generateSql(auditCols, sqlLike, resolveNames);
+    const sql = generateSqlQuery(auditCols, sqlLike, resolveNames);
     const query = db.prepare(sql);
     const stats = { added: 0, modified: 0, deleted: 0, renamed: 0, total: 0 };
 
     for (const r of query.iterate(...sqlLike, ...sqlLike)) {
-        const row = /** @type {Row} */ (r);
+        const row = /** @type {DiffRow} */ (r);
         const currentPath = row.n_path || row.o_path;
 
         // Path Filtering (minimatch)

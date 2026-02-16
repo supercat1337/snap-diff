@@ -4,6 +4,7 @@ import { createReadStream, createWriteStream } from 'node:fs';
 import { createInterface } from 'node:readline/promises';
 import { resolve } from 'node:path';
 import { formatDate } from '../lib/utils.js';
+import { ReportMetaData } from '../lib/report-metadata.js';
 
 /**
  * Exports NDJSON comparison data to a plain text report.
@@ -38,7 +39,7 @@ export async function exportToTxt(sourceNdjson, outPath, isHuman = true) {
 
             // 1. Process Metadata Header
             if (record.record_type === 'metadata') {
-                const { version, scan_start, filters, comparison } = record;
+                const { version, scan_start, filters, comparison } = /** @type {ReportMetaData} */ (record);
 
                 outputStream.write(`[ METADATA ]\n`);
                 outputStream.write(`Report Version : ${version}\n`);

@@ -4,6 +4,7 @@ import { createReadStream, createWriteStream } from 'node:fs';
 import { createInterface } from 'node:readline/promises';
 import { resolve } from 'node:path';
 import { formatDate } from '../lib/utils.js';
+import { ReportMetaData } from '../lib/report-metadata.js';
 
 /**
  * Escapes special characters for safe HTML insertion.
@@ -445,6 +446,7 @@ export async function exportToHtml(sourceNdjson, outPath, isHuman = true) {
         // ----------------------------------------------------------------------
         // Variables to hold metadata and summary (filled later)
         // ----------------------------------------------------------------------
+        /** @type {ReportMetaData|null} */
         let metadata = null;
         let summaryData = null;
         let rowCount = 0;
@@ -457,22 +459,22 @@ export async function exportToHtml(sourceNdjson, outPath, isHuman = true) {
             const record = JSON.parse(line);
 
             // ----- METADATA record (first) -----
-            if (record.record_type === 'metadata') {
-                metadata = record;
+            if (record.record_type === 'metadata') {;
+                metadata = /** @type {ReportMetaData} */ (record);
                 outputStream.write(`
     <!-- ========== METADATA GRID ========== -->
     <div class="meta-grid">
         <div class="meta-card">
             <span class="meta-label">Scan start</span>
-            <span class="meta-value">${escapeHTML(new Date(record.scan_start).toLocaleString())}</span>
+            <span class="meta-value">${escapeHTML(new Date(metadata.scan_start).toLocaleString())}</span>
         </div>
         <div class="meta-card">
             <span class="meta-label">Target (newer)</span>
-            <span class="meta-value">${escapeHTML(record.comparison.new.file || '—')}<small>${escapeHTML(record.comparison.new.snapshot_name || '')}</small></span>
+            <span class="meta-value">${escapeHTML(metadata.comparison.new.file || '—')}<small>${escapeHTML(metadata.comparison.new.name || '')}</small></span>
         </div>
         <div class="meta-card">
             <span class="meta-label">Baseline (older)</span>
-            <span class="meta-value">${escapeHTML(record.comparison.old.file || '—')}<small>${escapeHTML(record.comparison.old.snapshot_name || '')}</small></span>
+            <span class="meta-value">${escapeHTML(metadata.comparison.old.file || '—')}<small>${escapeHTML(metadata.comparison.old.name || '')}</small></span>
         </div>
     </div>
 `);

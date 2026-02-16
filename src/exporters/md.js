@@ -1,7 +1,7 @@
 // @ts-check
 import { createReadStream, createWriteStream } from 'node:fs';
 import { createInterface } from 'node:readline/promises';
-import { ReportMetaData } from '../lib/diff.js';
+import { ReportMetaData } from '../lib/report-metadata.js';
 import { resolve } from 'node:path';
 import { formatDate } from '../lib/utils.js';
 
@@ -53,7 +53,7 @@ export async function exportToMarkdown(sourceNdjson, outPath, isHuman = true) {
 
             // 1. Process Metadata Header
             if (record.record_type === 'metadata') {
-                const { version, scan_start, filters, comparison } = /** @type {ReportMetaData} */ (
+                const { scan_start, filters, comparison } = /** @type {ReportMetaData} */ (
                     record
                 );
 

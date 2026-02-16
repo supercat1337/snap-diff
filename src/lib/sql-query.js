@@ -1,6 +1,24 @@
 // @ts-check
 
 /**
+ * List of columns to select from the database.
+ * @type {string[]}
+ */
+const cols = [
+    'path',
+    'type',
+    'size',
+    'hash',
+    'mtime',
+    'ctime',
+    'btime',
+    'mode',
+    'ino',
+    'nlink',
+    'target',
+];
+
+/**
  * Generates a string of NULL fields for a given prefix (p_).
  * Useful for constructing SQL queries where some columns should be NULL.
  * The fields generated are path, type, size, hash, mtime, ctime, btime, mode, ino, nlink, target, user, and group.
@@ -9,19 +27,6 @@
  * @returns {string} A string of NULL fields, separated by commas.
  */
 const getNullFields = (p, resolveNames) => {
-    const cols = [
-        'path',
-        'type',
-        'size',
-        'hash',
-        'mtime',
-        'ctime',
-        'btime',
-        'mode',
-        'ino',
-        'nlink',
-        'target',
-    ];
     let f = cols.map(col => `NULL as ${p}_${col}`);
 
     if (resolveNames) {
@@ -39,19 +44,6 @@ const getNullFields = (p, resolveNames) => {
  * @returns {string}
  */
 const getFields = (p, resolveNames) => {
-    const cols = [
-        'path',
-        'type',
-        'size',
-        'hash',
-        'mtime',
-        'ctime',
-        'btime',
-        'mode',
-        'ino',
-        'nlink',
-        'target',
-    ];
     let f = cols.map(col => `${p}.${col} as ${p}_${col}`);
     if (resolveNames) {
         // Resolve to names: comparison will happen on these strings
@@ -90,7 +82,7 @@ const getAuthJoins = (p, dbName, resolveNames) =>
  * @param {boolean} resolveNames - Whether to use human-readable names (user/group) or IDs (uid/gid).
  * @returns {string} SQL query string.
  */
-export function generateSql(auditCols, sqlLike, resolveNames) {
+export function generateSqlQuery(auditCols, sqlLike, resolveNames) {
     const diffConditions = auditCols
         .map(col => {
             // The column names in the row result will match the col name from our audit list

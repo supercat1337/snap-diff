@@ -4,6 +4,7 @@ import { createReadStream, createWriteStream } from 'node:fs';
 import { createInterface } from 'node:readline/promises';
 import { resolve } from 'node:path';
 import { formatDate } from '../lib/utils.js';
+import { ReportMetaData } from '../lib/report-metadata.js';
 
 /**
  * Escapes special characters for safe HTML insertion.
@@ -81,11 +82,13 @@ export async function exportToHtml(sourceNdjson, outPath, isHuman = true) {
             const record = JSON.parse(line);
 
             if (record.record_type === 'metadata') {
+                const metadata = /** @type {ReportMetaData} */ (record);
+
                 outputStream.write(`<h1>Forensic Comparison Report</h1>
                 <div class="meta-grid">
-                    <div class="meta-item"><b>Scan Start</b>${escapeHTML(new Date(record.scan_start).toLocaleString())}</div>
-                    <div class="meta-item"><b>Target (New)</b>${escapeHTML(record.comparison.new.file)}</div>
-                    <div class="meta-item"><b>Baseline (Old)</b>${escapeHTML(record.comparison.old.file)}</div>
+                    <div class="meta-item"><b>Scan Start</b>${escapeHTML(new Date(metadata.scan_start).toLocaleString())}</div>
+                    <div class="meta-item"><b>Target (New)</b>${escapeHTML(metadata.comparison.new.file)}</div>
+                    <div class="meta-item"><b>Baseline (Old)</b>${escapeHTML(metadata.comparison.old.file)}</div>
                 </div>
                 <table>
                     <thead>
