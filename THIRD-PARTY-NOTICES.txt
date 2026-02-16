@@ -1,0 +1,369 @@
+THIRD-PARTY NOTICES
+===================
+
+This project includes third-party software components licensed under various open-source licenses.
+Below is a list of these components, their copyright notices, and the full license texts.
+
+====================================================================
+
+▶ MIT LICENSE
+=============
+
+The following packages are distributed under the MIT license:
+
+- @isaacs/balanced-match@4.0.1
+  Repository: https://github.com/isaacs/balanced-match
+  Copyright: Unknown
+
+- @isaacs/brace-expansion@5.0.1
+  Copyright: Unknown
+
+- base64-js@1.5.1
+  Repository: https://github.com/beatgammit/base64-js
+  Copyright: T. Jameson Little
+
+- better-sqlite3@11.10.0
+  Repository: https://github.com/WiseLibs/better-sqlite3
+  Copyright: Joshua Wise
+
+- bindings@1.5.0
+  Repository: https://github.com/TooTallNate/node-bindings
+  Copyright: Nathan Rajlich
+
+- bl@4.1.0
+  Repository: https://github.com/rvagg/bl
+  Copyright: Unknown
+
+- buffer@5.7.1
+  Repository: https://github.com/feross/buffer
+  Copyright: Feross Aboukhadijeh
+
+- decompress-response@6.0.0
+  Repository: https://github.com/sindresorhus/decompress-response
+  Copyright: Sindre Sorhus
+
+- deep-extend@0.6.0
+  Repository: https://github.com/unclechu/node-deep-extend
+  Copyright: Viacheslav Lotsmanov
+
+- end-of-stream@1.4.5
+  Repository: https://github.com/mafintosh/end-of-stream
+  Copyright: Mathias Buus
+
+- expand-template@2.0.3
+  Repository: https://github.com/ralphtheninja/expand-template
+  Copyright: LM
+
+- file-uri-to-path@1.0.0
+  Repository: https://github.com/TooTallNate/file-uri-to-path
+  Copyright: Nathan Rajlich
+
+- fs-constants@1.0.0
+  Repository: https://github.com/mafintosh/fs-constants
+  Copyright: Mathias Buus
+
+- github-from-package@0.0.0
+  Repository: https://github.com/substack/github-from-package
+  Copyright: James Halliday
+
+- mimic-response@3.1.0
+  Repository: https://github.com/sindresorhus/mimic-response
+  Copyright: Sindre Sorhus
+
+- minimist@1.2.8
+  Repository: https://github.com/minimistjs/minimist
+  Copyright: James Halliday
+
+- mkdirp-classic@0.5.3
+  Repository: https://github.com/mafintosh/mkdirp-classic
+  Copyright: Mathias Buus
+
+- napi-build-utils@2.0.0
+  Repository: https://github.com/inspiredware/napi-build-utils
+  Copyright: Jim Schlight
+
+- node-abi@3.87.0
+  Repository: https://github.com/electron/node-abi
+  Copyright: Lukas Geiger
+
+- prebuild-install@7.1.3
+  Repository: https://github.com/prebuild/prebuild-install
+  Copyright: Mathias Buus
+
+- pump@3.0.3
+  Repository: https://github.com/mafintosh/pump
+  Copyright: Mathias Buus Madsen
+
+- readable-stream@3.6.2
+  Repository: https://github.com/nodejs/readable-stream
+  Copyright: Unknown
+
+- safe-buffer@5.2.1
+  Repository: https://github.com/feross/safe-buffer
+  Copyright: Feross Aboukhadijeh
+
+- simple-concat@1.0.1
+  Repository: https://github.com/feross/simple-concat
+  Copyright: Feross Aboukhadijeh
+
+- simple-get@4.0.1
+  Repository: https://github.com/feross/simple-get
+  Copyright: Feross Aboukhadijeh
+
+- snap-diff@1.0.0
+  Copyright: Albert Bazaleev
+
+- string_decoder@1.3.0
+  Repository: https://github.com/nodejs/string_decoder
+  Copyright: Unknown
+
+- strip-json-comments@2.0.1
+  Repository: https://github.com/sindresorhus/strip-json-comments
+  Copyright: Sindre Sorhus
+
+- tar-fs@2.1.4
+  Repository: https://github.com/mafintosh/tar-fs
+  Copyright: Mathias Buus
+
+- tar-stream@2.2.0
+  Repository: https://github.com/mafintosh/tar-stream
+  Copyright: Mathias Buus
+
+- util-deprecate@1.0.2
+  Repository: https://github.com/TooTallNate/util-deprecate
+  Copyright: Nathan Rajlich
+
+
+---
+
+MIT License
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+
+====================================================================
+
+▶ ISC LICENSE
+=============
+
+The following packages are distributed under the ISC license:
+
+- chownr@1.1.4
+  Repository: https://github.com/isaacs/chownr
+  Copyright: Isaac Z. Schlueter
+
+- inherits@2.0.4
+  Repository: https://github.com/isaacs/inherits
+  Copyright: Unknown
+
+- ini@1.3.8
+  Repository: https://github.com/isaacs/ini
+  Copyright: Isaac Z. Schlueter
+
+- once@1.4.0
+  Repository: https://github.com/isaacs/once
+  Copyright: Isaac Z. Schlueter
+
+- semver@7.7.4
+  Repository: https://github.com/npm/node-semver
+  Copyright: GitHub Inc.
+
+- wrappy@1.0.2
+  Repository: https://github.com/npm/wrappy
+  Copyright: Isaac Z. Schlueter
+
+
+---
+
+ISC License
+
+Permission to use, copy, modify, and/or distribute this software for any
+purpose with or without fee is hereby granted, provided that the above
+copyright notice and this permission notice appear in all copies.
+
+THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
+WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
+MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY
+SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES WHATSOEVER
+RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN ACTION OF
+CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF OR IN
+CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
+
+====================================================================
+
+▶ BSD-3-CLAUSE LICENSE
+======================
+
+The following packages are distributed under the BSD-3-Clause license:
+
+- ieee754@1.2.1
+  Repository: https://github.com/feross/ieee754
+  Copyright: Feross Aboukhadijeh
+
+
+---
+
+BSD 3-Clause License
+
+Copyright (c) <year>, <copyright holder>
+All rights reserved.
+
+Redistribution and use in source and binary forms, with or without
+modification, are permitted provided that the following conditions are met:
+
+1. Redistributions of source code must retain the above copyright notice, this
+   list of conditions and the following disclaimer.
+
+2. Redistributions in binary form must reproduce the above copyright notice,
+   this list of conditions and the following disclaimer in the documentation
+   and/or other materials provided with the distribution.
+
+3. Neither the name of the copyright holder nor the names of its
+   contributors may be used to endorse or promote products derived from
+   this software without specific prior written permission.
+
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE
+FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
+CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
+OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+====================================================================
+
+▶ BSD-2-CLAUSE LICENSE
+======================
+
+The following packages are distributed under the BSD-2-Clause license:
+
+- detect-libc@2.1.2
+  Repository: https://github.com/lovell/detect-libc
+  Copyright: Lovell Fuller
+
+- rc@1.2.8
+  Repository: https://github.com/dominictarr/rc
+  Copyright: Dominic Tarr
+
+- tunnel-agent@0.6.0
+  Repository: https://github.com/mikeal/tunnel-agent
+  Copyright: Mikeal Rogers
+
+
+---
+
+BSD 2-Clause License
+
+Copyright (c) <year>, <copyright holder>
+All rights reserved.
+
+Redistribution and use in source and binary forms, with or without
+modification, are permitted provided that the following conditions are met:
+
+1. Redistributions of source code must retain the above copyright notice, this
+   list of conditions and the following disclaimer.
+
+2. Redistributions in binary form must reproduce the above copyright notice,
+   this list of conditions and the following disclaimer in the documentation
+   and/or other materials provided with the distribution.
+
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE
+FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
+CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
+OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+====================================================================
+
+▶ BLUEOAK-1.0.0 LICENSE
+=======================
+
+The following packages are distributed under the BlueOak-1.0.0 license:
+
+- minimatch@10.1.2
+  Repository: https://github.com/isaacs/minimatch
+  Copyright: Isaac Z. Schlueter
+
+
+---
+
+# Blue Oak Model License
+
+Version 1.0.0
+
+## Purpose
+
+This license gives everyone as much permission to work with
+this software as possible, while protecting contributors
+from liability.
+
+## Acceptance
+
+In order to receive this license, you must agree to its
+rules. The rules of this license are both obligations
+under that agreement and conditions to your license.
+You must not do anything with this software that triggers
+a rule that you cannot or will not follow.
+
+## Copyright
+
+Each contributor licenses you to do everything with this
+software that would otherwise infringe that contributor's
+copyright in it.
+
+## Notices
+
+You must ensure that everyone who gets a copy of any part of
+this software from you, with or without changes, also gets
+the text of this license or a link to
+<https://blueoakcouncil.org/license/1.0.0>.
+
+## Excuse
+
+If anyone notifies you in writing that you have not
+complied with Notices, you can keep your license by taking
+all practical steps to comply within 30 days after the notice.
+If you do not do so, your license ends immediately.
+
+## Patent
+
+Each contributor licenses you to do everything with this
+software that would otherwise infringe any patent claims
+they can license or become able to license.
+
+## Reliability
+
+No contributor can revoke this license.
+
+## No Liability
+
+***As far as the law allows, this software comes as is,
+without any warranty or condition, and no contributor
+will be liable to anyone for any damages related to this
+software or this license, under any kind of legal claim.***
+
+====================================================================
+

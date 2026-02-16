@@ -1,15 +1,20 @@
 {
-  "name": "snap-diff",
-  "version": "1.0.0",
-  "type": "module",
-  "bin": {
-    "snap-diff": "./src/snap-diff.js"
-  },
-  "scripts": {
-    "get-licenses": "npx @ratcopycat/license-lens --out=LICENSES.md"
-  },
-  "dependencies": {
-    "better-sqlite3": "^11.0.0",
-    "minimatch": "^10.1.2"
-  }
+    "name": "snap-diff",
+    "version": "1.0.0",
+    "type": "module",
+    "license": "MIT",
+    "bin": {
+        "snap-diff": "./src/snap-diff.js"
+    },
+    "author": {
+        "name": "Albert Bazaleev"
+    },
+    "scripts": {
+        "get-licenses": "npx @ratcopycat/license-lens --out=LICENSES.md",
+        "generate-notices": "license-checker --production --json > licenses.json && node scripts/generate-notices.js"
+    },
+    "dependencies": {
+        "better-sqlite3": "^11.0.0",
+        "minimatch": "^10.1.2"
+    }
 }
