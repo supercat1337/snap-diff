@@ -14,7 +14,7 @@ import { mkdtemp, rm } from 'node:fs/promises';
 import { join, resolve, basename } from 'node:path';
 import { readFileSync } from 'node:fs';
 import { parseArgs } from 'node:util';
-import { compareTimeDetection } from './lib/db-utils.js';
+import { determineNewerSnapshot } from './lib/db-utils.js';
 import { streamCompareSnapshots } from './lib/diff.js';
 import { exportToCsv } from './exporters/csv.js';
 import { exportToMarkdown } from './exporters/md.js';
@@ -122,7 +122,7 @@ async function main() {
 
         // ----- Detect which snapshot is newer --------------------------------
         if (isHuman) process.stdout.write('[*] Analyzing metadata... ');
-        const { newDbPath, oldDbPath, infoOld, infoNew } = compareTimeDetection(
+        const { newDbPath, oldDbPath, infoOld, infoNew } = determineNewerSnapshot(
             resolve(positionals[0]),
             resolve(positionals[1])
         );

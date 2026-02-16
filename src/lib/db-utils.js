@@ -8,7 +8,7 @@ import Database from 'better-sqlite3';
  * @returns {{ infoOld: import('./diff.js').SnapshotInfo, infoNew: import('./diff.js').SnapshotInfo, newDbPath: string, oldDbPath: string }} - An object containing the older snapshot info, newer snapshot info, and paths to the newer and older databases.
  * @throws {Error} - If either database is missing the snapshot_info table.
  */
-export function compareTimeDetection(pathA, pathB) {
+export function determineNewerSnapshot(pathA, pathB) {
     const dbA = new Database(pathA, { readonly: true });
     const dbB = new Database(pathB, { readonly: true });
     const infoA = /** @type {import('./diff.js').SnapshotInfo} */ (
