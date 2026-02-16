@@ -5,6 +5,9 @@
   "bin": {
     "snap-diff": "./src/snap-diff.js"
   },
+  "scripts": {
+    "get-licenses": "npx @ratcopycat/license-lens --out=LICENSES.md"
+  },
   "dependencies": {
     "better-sqlite3": "^11.0.0",
     "minimatch": "^10.1.2"
