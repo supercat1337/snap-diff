@@ -72,19 +72,19 @@ snap-diff v1.db v2.db --json --export reports/audit --format csv > result.json
 
 ## 🛠 Command Line Options
 
-| Flag         | Long Name        | Description                                                               |
-|--------------|------------------|---------------------------------------------------------------------------|
-| `-p`         | [positionals]    | Paths to the two `.db` snapshots to compare.                             |
-| `-o`         | `--output`       | Path to save the raw NDJSON comparison stream.                           |
-| `--export`   | `<basename>`     | Basename for exported reports (requires `--format`).                     |
-| `-f`         | `--format`       | Comma-separated formats: `csv`, `txt`, `html`, `md`.                     |
-| `-e`         | `--exclude`      | Glob pattern to exclude from comparison (multiple allowed).              |
-|              | `--include-cols` | Whitelist of columns to compare (e.g. `hash,size`).                      |
-|              | `--exclude-cols` | Blacklist of columns to ignore (e.g. `mtime,ino`).                       |
-| `-r`         | `--resolve-names`| Compare by username/groupname instead of UID/GID.                        |
-| `-j`         | `--json`         | Machine-readable JSON output (includes report paths).                    |
-| `-q`         | `--quiet`        | Disable all console output (except errors).                              |
-| `-h`         | `--help`         | Show help.                                                               |
+| Flag       | Long Name         | Description                                                 |
+| ---------- | ----------------- | ----------------------------------------------------------- |
+| `-p`       | [positionals]     | Paths to the two `.db` snapshots to compare.                |
+| `-o`       | `--output`        | Path to save the raw NDJSON comparison stream.              |
+| `--export` | `<basename>`      | Basename for exported reports (requires `--format`).        |
+| `-f`       | `--format`        | Comma-separated formats: `csv`, `txt`, `html`, `md`.        |
+| `-e`       | `--exclude`       | Glob pattern to exclude from comparison (multiple allowed). |
+|            | `--include-cols`  | Whitelist of columns to compare (e.g. `hash,size`).         |
+|            | `--exclude-cols`  | Blacklist of columns to ignore (e.g. `mtime,ino`).          |
+| `-r`       | `--resolve-names` | Compare by username/groupname instead of UID/GID.           |
+| `-j`       | `--json`          | Machine-readable JSON output (includes report paths).       |
+| `-q`       | `--quiet`         | Disable all console output (except errors).                 |
+| `-h`       | `--help`          | Show help.                                                  |
 
 ---
 
